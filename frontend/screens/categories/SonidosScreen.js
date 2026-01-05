@@ -11,19 +11,25 @@ export default function SonidosScreen() {
     loadWords();
   }, []);
 
+  const isValidAudioUrl = (url) => {
+    return url && (url.startsWith('http://') || url.startsWith('https://'));
+  };
+
   const loadWords = async () => {
     try {
       const result = await getAllWords();
       console.log('Loaded words:', result?.length || 0);
       
-      // Filter words that have at least one sound
+      // Filter words that have at least one VALID audio URL
       const wordsWithSound = result.filter(w => {
-        const hasSound = w.englishSound || w.spanishSound || w.tamilPronunciation;
+        const hasSound = isValidAudioUrl(w.englishSound) || 
+                        isValidAudioUrl(w.spanishSound) || 
+                        isValidAudioUrl(w.tamilPronunciation);
         if (hasSound) {
           console.log(`Word ${w.englishName} has sounds:`, {
-            english: !!w.englishSound,
-            spanish: !!w.spanishSound,
-            tamil: !!w.tamilPronunciation
+            english: isValidAudioUrl(w.englishSound),
+            spanish: isValidAudioUrl(w.spanishSound),
+            tamil: isValidAudioUrl(w.tamilPronunciation)
           });
         }
         return hasSound;
@@ -40,7 +46,7 @@ export default function SonidosScreen() {
   };
 
   const playAudio = async (uri, language) => {
-    if (!uri) {
+    if (!uri || !isValidAudioUrl(uri)) {
       Alert.alert('No Audio', `No ${language} audio available`);
       return;
     }
@@ -82,7 +88,7 @@ export default function SonidosScreen() {
                 )}
               </View>
               <View style={styles.audioButtons}>
-                {word.englishSound && (
+                {isValidAudioUrl(word.englishSound) && (
                   <TouchableOpacity
                     style={styles.audioButtonLarge}
                     onPress={() => playAudio(word.englishSound, 'English')}
@@ -91,7 +97,7 @@ export default function SonidosScreen() {
                     <Text style={styles.audioLabel}>English</Text>
                   </TouchableOpacity>
                 )}
-                {word.spanishSound && (
+                {isValidAudioUrl(word.spanishSound) && (
                   <TouchableOpacity
                     style={styles.audioButtonLarge}
                     onPress={() => playAudio(word.spanishSound, 'Spanish')}
@@ -100,7 +106,7 @@ export default function SonidosScreen() {
                     <Text style={styles.audioLabel}>Español</Text>
                   </TouchableOpacity>
                 )}
-                {word.tamilPronunciation && (
+                {isValidAudioUrl(word.tamilPronunciation) && (
                   <TouchableOpacity
                     style={styles.audioButtonLarge}
                     onPress={() => playAudio(word.tamilPronunciation, 'Tamil')}

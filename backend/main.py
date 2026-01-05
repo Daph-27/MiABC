@@ -290,6 +290,170 @@ async def upload_profile_photo(image_base64: str, current_user: models.User = De
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# ========== LEARNER PROGRESS TRACKING ENDPOINTS ==========
+
+@app.post("/api/progress", response_model=schemas.LearnerProgress)
+def track_progress(progress: schemas.LearnerProgressCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Track learner progress in a module"""
+    db_progress = models.LearnerProgress(**progress.model_dump(), userId=current_user.userId)
+    db.add(db_progress)
+    db.commit()
+    db.refresh(db_progress)
+    return db_progress
+
+@app.get("/api/progress", response_model=List[schemas.LearnerProgress])
+def get_progress(module: Optional[str] = None, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Get learner progress, optionally filtered by module"""
+    query = db.query(models.LearnerProgress).filter(models.LearnerProgress.userId == current_user.userId)
+    if module:
+        query = query.filter(models.LearnerProgress.moduleName == module)
+    return query.all()
+
+@app.post("/api/quiz/attempt", response_model=schemas.QuizAttempt)
+def record_quiz_attempt(attempt: schemas.QuizAttemptCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Record a quiz attempt"""
+    db_attempt = models.QuizAttempt(**attempt.model_dump(), userId=current_user.userId)
+    db.add(db_attempt)
+    db.commit()
+    db.refresh(db_attempt)
+    return db_attempt
+
+@app.get("/api/quiz/attempts", response_model=List[schemas.QuizAttempt])
+def get_quiz_attempts(quiz_type: Optional[str] = None, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Get quiz attempts"""
+    query = db.query(models.QuizAttempt).filter(models.QuizAttempt.userId == current_user.userId)
+    if quiz_type:
+        query = query.filter(models.QuizAttempt.quizType == quiz_type)
+    return query.order_by(models.QuizAttempt.createdAt.desc()).all()
+
+@app.post("/api/pronunciation/attempt", response_model=schemas.PronunciationAttempt)
+def record_pronunciation(attempt: schemas.PronunciationAttemptCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Record a pronunciation practice attempt"""
+    db_attempt = models.PronunciationAttempt(**attempt.model_dump(), userId=current_user.userId)
+    db.add(db_attempt)
+    db.commit()
+    db.refresh(db_attempt)
+    return db_attempt
+
+@app.post("/api/session/start", response_model=schemas.LearningSession)
+def start_learning_session(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Start a new learning session"""
+    db_session = models.LearningSession(userId=current_user.userId)
+    db.add(db_session)
+    db.commit()
+    db.refresh(db_session)
+    return db_session
+
+@app.put("/api/session/{session_id}", response_model=schemas.LearningSession)
+def end_learning_session(session_id: int, session_data: schemas.LearningSessionBase, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """End a learning session with final stats"""
+    session = db.query(models.LearningSession).filter(
+        models.LearningSession.id == session_id,
+        models.LearningSession.userId == current_user.userId
+    ).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    for key, value in session_data.model_dump(exclude_unset=True).items():
+        setattr(session, key, value)
+    
+    db.commit()
+    db.refresh(session)
+    return session
+
+# ========== ANALYTICS ENDPOINTS ==========
+
+@app.get("/api/analytics/overview", response_model=schemas.LearnerAnalytics)
+def get_learner_analytics(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Get comprehensive learner analytics"""
+    from sqlalchemy import func
+    
+    # Total sessions
+    total_sessions = db.query(func.count(models.LearningSession.id)).filter(
+        models.LearningSession.userId == current_user.userId
+    ).scalar() or 0
+    
+    # Total time spent
+    total_time = db.query(func.sum(models.LearningSession.totalTimeSpent)).filter(
+        models.LearningSession.userId == current_user.userId
+    ).scalar() or 0
+    
+    # Average score from progress
+    avg_score = db.query(func.avg(models.LearnerProgress.score)).filter(
+        models.LearnerProgress.userId == current_user.userId,
+        models.LearnerProgress.score.isnot(None)
+    ).scalar() or 0.0
+    
+    # Module progress
+    modules_progress = {}
+    progress_by_module = db.query(
+        models.LearnerProgress.moduleName,
+        func.avg(models.LearnerProgress.score),
+        func.count(models.LearnerProgress.id)
+    ).filter(
+        models.LearnerProgress.userId == current_user.userId
+    ).group_by(models.LearnerProgress.moduleName).all()
+    
+    for module_name, avg_module_score, count in progress_by_module:
+        modules_progress[module_name] = {
+            "averageScore": float(avg_module_score) if avg_module_score else 0,
+            "attempts": count
+        }
+    
+    # Strong and weak areas
+    strong_areas = [m for m, data in modules_progress.items() if data["averageScore"] >= 70]
+    weak_areas = [m for m, data in modules_progress.items() if data["averageScore"] < 50 and data["attempts"] > 0]
+    
+    # Recent activity
+    recent_progress = db.query(models.LearnerProgress).filter(
+        models.LearnerProgress.userId == current_user.userId
+    ).order_by(models.LearnerProgress.createdAt.desc()).limit(10).all()
+    
+    recent_activity = [{
+        "module": p.moduleName,
+        "score": p.score,
+        "date": p.createdAt.isoformat()
+    } for p in recent_progress]
+    
+    return {
+        "totalSessions": total_sessions,
+        "totalTimeSpent": total_time,
+        "averageScore": float(avg_score),
+        "modulesProgress": modules_progress,
+        "strongAreas": strong_areas,
+        "weakAreas": weak_areas,
+        "recentActivity": recent_activity
+    }
+
+@app.get("/api/analytics/module/{module_name}", response_model=schemas.ModuleStats)
+def get_module_stats(module_name: str, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Get detailed statistics for a specific module"""
+    from sqlalchemy import func
+    
+    progress = db.query(models.LearnerProgress).filter(
+        models.LearnerProgress.userId == current_user.userId,
+        models.LearnerProgress.moduleName == module_name
+    ).all()
+    
+    if not progress:
+        return {
+            "moduleName": module_name,
+            "completionRate": 0.0,
+            "averageScore": 0.0,
+            "totalAttempts": 0,
+            "timeSpent": 0
+        }
+    
+    completed = sum(1 for p in progress if p.completed == 1)
+    total_attempts = len(progress)
+    avg_score = sum(p.score for p in progress if p.score) / total_attempts if total_attempts > 0 else 0
+    time_spent = sum(p.timeSpent for p in progress if p.timeSpent) or 0
+    
+    return {
+        "moduleName": module_name,
+        "completionRate": (completed / total_attempts * 100) if total_attempts > 0 else 0,
+        "averageScore": avg_score,
+        "totalAttempts": total_attempts,
+        "timeSpent": time_spent
+    }
+

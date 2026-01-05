@@ -220,6 +220,62 @@ export const deleteWord = async (wordId) => {
   });
 };
 
+// ========== LEARNER PROGRESS TRACKING ==========
+
+export const trackProgress = async (progressData) => {
+  return await apiRequest('/progress', {
+    method: 'POST',
+    body: JSON.stringify(progressData),
+  });
+};
+
+export const getProgress = async (module = null) => {
+  const endpoint = module ? `/progress?module=${module}` : '/progress';
+  return await apiRequest(endpoint);
+};
+
+export const recordQuizAttempt = async (attemptData) => {
+  return await apiRequest('/quiz/attempt', {
+    method: 'POST',
+    body: JSON.stringify(attemptData),
+  });
+};
+
+export const getQuizAttempts = async (quizType = null) => {
+  const endpoint = quizType ? `/quiz/attempts?quiz_type=${quizType}` : '/quiz/attempts';
+  return await apiRequest(endpoint);
+};
+
+export const recordPronunciation = async (pronunciationData) => {
+  return await apiRequest('/pronunciation/attempt', {
+    method: 'POST',
+    body: JSON.stringify(pronunciationData),
+  });
+};
+
+export const startLearningSession = async () => {
+  return await apiRequest('/session/start', {
+    method: 'POST',
+  });
+};
+
+export const endLearningSession = async (sessionId, sessionData) => {
+  return await apiRequest(`/session/${sessionId}`, {
+    method: 'PUT',
+    body: JSON.stringify(sessionData),
+  });
+};
+
+// ========== ANALYTICS ==========
+
+export const getLearnerAnalytics = async () => {
+  return await apiRequest('/analytics/overview');
+};
+
+export const getModuleStats = async (moduleName) => {
+  return await apiRequest(`/analytics/module/${moduleName}`);
+};
+
 // ========== READING TEXT OPERATIONS ==========
 
 export const getReadingTexts = async () => {
