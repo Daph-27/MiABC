@@ -1,6 +1,6 @@
 [build]
   publish = "web-build"
-  command = "echo 'Using pre-built files'"
+  command = "npm run build:web"
 
 [[redirects]]
   from = "/*"
