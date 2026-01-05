@@ -27,10 +27,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E53935',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   appLogo: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '90%',
+    maxWidth: 600,
+    maxHeight: 800,
     resizeMode: 'contain',
   },
 });
