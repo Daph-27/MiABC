@@ -6,10 +6,34 @@ import { getAllWords } from '../../database/api';
 export default function SonidosScreen() {
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [imageErrors, setImageErrors] = useState({});
 
   useEffect(() => {
     loadWords();
+    setupAudio();
+    
+    return () => {
+      if (currentSound) {
+        currentSound.unloadAsync();
+      }
+    };
   }, []);
+
+  const setupAudio = async () => {
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: true,
+        playThroughEarpieceAndroid: false,
+      });
+      console.log('Audio mode configured successfully');
+    } catch (error) {
+      console.error('Error setting up audio:', error);
+    }
+  };
 
   const isValidAudioUrl = (url) => {
     return url && (url.startsWith('http://') || url.startsWith('https://'));
@@ -50,17 +74,46 @@ export default function SonidosScreen() {
       Alert.alert('No Audio', `No ${language} audio available`);
       return;
     }
+    
     try {
-      const { sound } = await Audio.Sound.createAsync({ uri });
-      await sound.playAsync();
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          sound.unloadAsync();
+      console.log(`Attempting to play ${language} audio:`, uri);
+      
+      // Stop current sound if playing
+      if (currentSound) {
+        console.log('Stopping previous sound');
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+      }
+      
+      // Create new sound object
+      console.log('Creating new sound object...');
+      const { sound } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: false }, // Don't auto-play, we'll start it manually
+        (status) => {
+          if (status.didJustFinish) {
+            console.log('Audio finished playing');
+            sound.unloadAsync();
+            setCurrentSound(null);
+          }
+          if (status.error) {
+            console.error('Playback status error:', status.error);
+          }
         }
-      });
+      );
+      
+      console.log('Sound object created, starting playback...');
+      setCurrentSound(sound);
+      
+      // Play the sound
+      await sound.playAsync();
+      console.log(`${language} audio started successfully`);
+      
     } catch (error) {
       console.error('Error playing audio:', error);
-      Alert.alert('Error', 'Could not play audio');
+      console.error('Error details:', JSON.stringify(error));
+      Alert.alert('Audio Error', `Could not play ${language} audio. ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -77,8 +130,22 @@ export default function SonidosScreen() {
         ) : (
           words.map((word) => (
             <View key={word.id} style={styles.soundCard}>
-              {word.imagePath && (
-                <Image source={{ uri: word.imagePath }} style={styles.wordImage} />
+              {isValidAudioUrl(word.imagePath) && !imageErrors[word.id] ? (
+                <Image 
+                  source={{ uri: word.imagePath }} 
+                  style={styles.wordImage}
+                  onError={(e) => {
+                    console.log('Image load error for', word.englishName, ':', e.nativeEvent.error);
+                    setImageErrors(prev => ({...prev, [word.id]: true}));
+                  }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.placeholderImage}>
+                  <Text style={styles.placeholderText}>
+                    {word.englishName.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
               )}
               <View style={styles.wordInfo}>
                 <Text style={styles.wordEnglish}>{word.englishName}</Text>
@@ -133,6 +200,20 @@ const styles = StyleSheet.create({
   emptyText: { textAlign: 'center', fontSize: 16, color: '#999', marginTop: 20 },
   soundCard: { backgroundColor: '#F9F9F9', borderRadius: 10, padding: 15, marginBottom: 15, elevation: 2 },
   wordImage: { width: '100%', height: 150, borderRadius: 10, marginBottom: 10, backgroundColor: '#E0E0E0' },
+  placeholderImage: { 
+    width: '100%', 
+    height: 150, 
+    borderRadius: 10, 
+    marginBottom: 10, 
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  placeholderText: {
+    fontSize: 64,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
   wordInfo: { marginBottom: 15 },
   wordEnglish: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   wordSpanish: { fontSize: 18, color: '#666', marginTop: 3 },
