@@ -1,8 +1,30 @@
-// API Configuration
-// For Android Emulator, use: http://10.0.2.2:8000/api
-// For Physical Device, use: http://YOUR_COMPUTER_IP:8000/api
-// For iOS Simulator, use: http://localhost:8000/api
-const API_BASE_URL = 'http://10.0.2.2:8000/api';
+import { Platform } from 'react-native';
+
+// API Configuration - Automatically detects platform
+// For Android Emulator: http://10.0.2.2:8000/api
+// For iOS Simulator/Web: http://localhost:8000/api
+// For Physical Device: http://YOUR_COMPUTER_IP:8000/api (change this)
+
+const getApiBaseUrl = () => {
+  if (Platform.OS === 'android') {
+    // Android Emulator uses 10.0.2.2 to access host machine's localhost
+    return 'http://10.0.2.2:8000/api';
+  } else if (Platform.OS === 'ios') {
+    // iOS Simulator can use localhost
+    return 'http://localhost:8000/api';
+  } else if (Platform.OS === 'web') {
+    // Web browser uses localhost
+    return 'http://localhost:8000/api';
+  } else {
+    // For physical devices, you need to use your computer's IP address
+    // Find your IP with: ipconfig (Windows) or ifconfig (Mac/Linux)
+    return 'http://localhost:8000/api';
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+console.log(`API URL for ${Platform.OS}:`, API_BASE_URL);
 
 // Store auth token
 let authToken = null;
