@@ -1,23 +1,17 @@
 import { Platform } from 'react-native';
 
-// API Configuration - Automatically detects platform
-// For Android Emulator: http://10.0.2.2:8000/api
-// For iOS Simulator/Web: http://localhost:8000/api
-// For Physical Device: http://YOUR_COMPUTER_IP:8000/api (change this)
+// API Configuration - Auto-detects platform
+// Update BACKEND_URL when deploying to production
+const BACKEND_URL = 'http://localhost:8000'; // Change this to your deployed backend URL
 
 const getApiBaseUrl = () => {
   if (Platform.OS === 'android') {
-    // Android Emulator uses 10.0.2.2 to access host machine's localhost
     return 'http://10.0.2.2:8000/api';
   } else if (Platform.OS === 'ios') {
-    // iOS Simulator can use localhost
     return 'http://localhost:8000/api';
   } else if (Platform.OS === 'web') {
-    // Web browser uses localhost
     return 'http://localhost:8000/api';
   } else {
-    // For physical devices, you need to use your computer's IP address
-    // Find your IP with: ipconfig (Windows) or ifconfig (Mac/Linux)
     return 'http://localhost:8000/api';
   }
 };
