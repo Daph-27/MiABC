@@ -1,18 +1,23 @@
 import { Platform } from 'react-native';
 
-// API Configuration - Auto-detects platform
-// Update BACKEND_URL when deploying to production
-const BACKEND_URL = 'http://localhost:8000'; // Change this to your deployed backend URL
+// API Configuration - Automatically detects platform
+// For Android Emulator: http://10.0.2.2:8000/api
+// For iOS Simulator/Web: http://localhost:8000/api
+// For Physical Device: http://YOUR_COMPUTER_IP:8000/api (change this)
 
 const getApiBaseUrl = () => {
   if (Platform.OS === 'android') {
-    return 'http://10.0.2.2:8000/api';
+    // Android Emulator uses production backend
+    return 'https://miabc-backend.onrender.com/api';
   } else if (Platform.OS === 'ios') {
-    return 'http://localhost:8000/api';
+    // iOS uses production backend
+    return 'https://miabc-backend.onrender.com/api';
   } else if (Platform.OS === 'web') {
-    return 'http://localhost:8000/api';
+    // Web uses production backend
+    return 'https://miabc-backend.onrender.com/api';
   } else {
-    return 'http://localhost:8000/api';
+    // Default to production backend
+    return 'https://miabc-backend.onrender.com/api';
   }
 };
 
