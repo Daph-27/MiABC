@@ -107,24 +107,6 @@ def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 def get_current_user_info(current_user: models.User = Depends(get_current_user)):
     return current_user
 
-# Debug endpoint - List all registered usernames (for testing)
-@app.get("/api/debug/users")
-def list_all_users(db: Session = Depends(get_db)):
-    """List all registered usernames - FOR DEBUGGING ONLY"""
-    users = db.query(models.User.userId, models.User.username, models.User.guardianName, models.User.learnerName).all()
-    return {
-        "total_users": len(users),
-        "users": [
-            {
-                "userId": user.userId,
-                "username": user.username,
-                "guardianName": user.guardianName,
-                "learnerName": user.learnerName
-            }
-            for user in users
-        ]
-    }
-
 # ========== USER ENDPOINTS ==========
 
 @app.get("/api/users/{user_id}", response_model=schemas.User)
