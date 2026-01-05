@@ -15,7 +15,7 @@ export default function LoginScreen({ navigation }) {
     try {
       const user = await loginUser(email, password);
       if (user) {
-        navigation.replace('Main');
+        navigation.replace('Main', { user });
       } else {
         Alert.alert('Error', 'Incorrect credentials');
       }

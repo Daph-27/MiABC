@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { getCurrentUser } from '../database/api';
 
-export default function DashboardScreen({ navigation }) {
+export default function DashboardScreen({ navigation, route }) {
+  const [learnerName, setLearnerName] = useState('User');
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        // Try to get user from route params first
+        if (route?.params?.user?.learnerName) {
+          setLearnerName(route.params.user.learnerName);
+        } else {
+          // Otherwise fetch from API
+          const user = await getCurrentUser();
+          if (user?.learnerName) {
+            setLearnerName(user.learnerName);
+          }
+        }
+      } catch (error) {
+        console.log('Error loading user data:', error);
+      }
+    };
+    
+    loadUserData();
+  }, [route?.params?.user]);
   const categories = [
     { name: 'ALPHABET', subtitle: 'Alfabeto', color: '#4CAF50', route: 'Alfabeto' },
     { name: 'SOUNDS', subtitle: 'Sonidos', color: '#2196F3', route: 'Sonidos' },
@@ -16,7 +39,7 @@ export default function DashboardScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hello, Rossi</Text>
+        <Text style={styles.greeting}>Hello, {learnerName}</Text>
       </View>
 
       <ScrollView style={styles.categoryGrid} contentContainerStyle={styles.gridContent}>
