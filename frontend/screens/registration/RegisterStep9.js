@@ -4,9 +4,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 export default function RegisterStep9({ navigation, route }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>PASO : 9</Text>
       <View style={styles.content}>
-        <Text style={styles.instruction}>Grabación de frase para internet</Text>
+        <Text style={styles.instruction}>Recording phrase for internet</Text>
         <View style={styles.recordButtons}>
           <TouchableOpacity style={[styles.recordButton, { backgroundColor: '#FF0000' }]}>
             <Text style={styles.recordText}>🎤</Text>
@@ -17,10 +16,10 @@ export default function RegisterStep9({ navigation, route }) {
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText}>ANTERIOR</Text>
+            <Text style={styles.buttonText}>PREVIOUS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('RegisterStep10', route.params)}>
-            <Text style={styles.buttonText}>SIGUIENTE</Text>
+            <Text style={styles.buttonText}>NEXT</Text>
           </TouchableOpacity>
         </View>
       </View>

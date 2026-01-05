@@ -7,7 +7,6 @@ export default function RegisterStep3({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 3</Text>
       <View style={styles.content}>
         <Text style={styles.label}>Phone Number</Text>
         <Text style={styles.instruction}>Enter the guardian's phone number below</Text>

@@ -41,8 +41,6 @@ export default function RegisterStep1({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 1</Text>
-      
       <View style={styles.content}>
         <Text style={styles.label}>Profile Picture</Text>
         

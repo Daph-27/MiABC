@@ -9,7 +9,6 @@ export default function RegisterStep4({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 4</Text>
       <View style={styles.content}>
         <Text style={styles.instruction}>In this step, enter the learner's name</Text>
         <TextInput 

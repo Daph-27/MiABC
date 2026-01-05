@@ -13,7 +13,6 @@ export default function RegisterStep2({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 2</Text>
       <View style={styles.content}>
         <Text style={styles.label}>Guardian Information</Text>
         <Text style={styles.instruction}>Enter the first name of the learner's guardian</Text>

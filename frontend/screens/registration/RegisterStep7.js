@@ -7,7 +7,6 @@ export default function RegisterStep7({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 7</Text>
       <View style={styles.content}>
         <Text style={styles.instruction}>Enter a password. This will be the password used for login</Text>
         <TextInput 

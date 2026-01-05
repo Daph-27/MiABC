@@ -12,8 +12,6 @@ export default function RegisterStep0({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 0</Text>
-      
       <View style={styles.content}>
         <Text style={styles.label}>Access Code</Text>
         <Text style={styles.instruction}>

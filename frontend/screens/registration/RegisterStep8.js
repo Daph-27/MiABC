@@ -5,9 +5,8 @@ export default function RegisterStep8({ navigation, route }) {
   const params = route.params;
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>PASO : 8</Text>
       <View style={styles.content}>
-        <Text style={styles.instruction}>Pulsa el botón rojo para grabar{'\n'}Pulsa el botón azul para escuchar</Text>
+        <Text style={styles.instruction}>Press the red button to record{'\n'}Press the blue button to listen</Text>
         <View style={styles.recordButtons}>
           <TouchableOpacity style={[styles.recordButton, { backgroundColor: '#FF0000' }]}><Text style={styles.recordText}>🎤</Text></TouchableOpacity>
           <TouchableOpacity style={[styles.recordButton, { backgroundColor: '#0000FF' }]}><Text style={styles.recordText}>▶️</Text></TouchableOpacity>

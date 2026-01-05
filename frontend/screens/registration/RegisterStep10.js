@@ -6,7 +6,6 @@ export default function RegisterStep10({ navigation, route }) {
   
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 10</Text>
       <View style={styles.content}>
         <Text style={styles.instruction}>Enter a username for parental lock</Text>
         <TextInput 

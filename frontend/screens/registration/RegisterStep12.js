@@ -17,7 +17,6 @@ export default function RegisterStep12({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 12</Text>
       <View style={styles.content}>
         <Text style={styles.logo}>Mi ABC</Text>
         <Text style={styles.title}>Successfully registered!</Text>

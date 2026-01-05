@@ -7,7 +7,6 @@ export default function RegisterStep6({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.step}>STEP : 6</Text>
       <View style={styles.content}>
         <Text style={styles.instruction}>Enter the email address, this will be used for login</Text>
         <TextInput 
