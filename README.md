@@ -1,183 +1,230 @@
-# MIABC - Multilingual Interactive ABC Learning Platform
+# MiABC - Complete Full-Stack Application
 
-A comprehensive educational application supporting English, Spanish, and Tamil languages for children's literacy development.
+Educational app for literacy learning in Spanish, English, and Tamil languages.
 
-## 📁 Project Structure
+## 🎯 Project Structure
 
 ```
 MIABC/
-├── backend/              # FastAPI Backend Server
-│   ├── migrations/       # Database migrations
-│   ├── main.py          # API entry point
-│   ├── models.py        # Database models
-│   ├── schemas.py       # Pydantic schemas
-│   ├── database.py      # Database configuration
-│   ├── auth.py          # Authentication
-│   ├── firebase_config.py # Firebase integration
-│   ├── originalWords.sql # Data source (company provided)
-│   ├── miabc.db         # SQLite database
-│   └── requirements.txt # Python dependencies
+├── backend/                 # FastAPI Backend
+│   ├── main.py             # API endpoints
+│   ├── models.py           # SQLAlchemy models
+│   ├── schemas.py          # Pydantic schemas
+│   ├── database.py         # Database configuration
+│   ├── auth.py             # JWT authentication
+│   ├── requirements.txt    # Python dependencies
+│   ├── .env                # Environment variables
+│   └── start-server.bat    # Windows startup script
 │
-└── frontend/            # React Native Mobile App
-    ├── screens/         # App screens
-    │   ├── registration/  # Multi-step registration
-    │   └── categories/    # Learning modules
-    ├── database/        # Local database & API client
-    ├── assets/          # Images, fonts, icons
-    ├── App.js          # Main app component
-    └── package.json    # Node dependencies
+└── MiABC-App/              # React Native Frontend
+    ├── App.js              # Main navigation
+    ├── database/
+    │   └── api.js          # API service layer
+    ├── screens/
+    │   ├── LoginScreen.js
+    │   ├── DashboardScreen.js
+    │   ├── registration/   # 12-step registration
+    │   └── categories/     # Learning modules
+    └── package.json
+
 ```
 
-## ✨ Features
-
-- ✅ Multilingual vocabulary (English, Spanish, Tamil)
-- ✅ User registration and authentication (JWT)
-- ✅ Family member profiles with photos
-- ✅ Reading texts and exercises
-- ✅ Audio pronunciation support
-- ✅ Firebase image storage
-- ✅ RESTful API backend
-- ✅ Cross-platform mobile app (iOS & Android)
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Backend Setup
 
+1. **Start the backend server:**
 ```bash
 cd backend
+python -m venv venv
+venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-python -m uvicorn main:app --reload --port 8000
+python main.py
 ```
 
-**API Documentation:** http://localhost:8000/docs
+Or double-click `start-server.bat` on Windows.
+
+The API will run on `http://localhost:8000`
+
+2. **View API Documentation:**
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
 ### Frontend Setup
 
+1. **Update API configuration** in `MiABC-App/database/api.js`:
+   
+   For Android Emulator:
+   ```javascript
+   const API_BASE_URL = 'http://10.0.2.2:8000/api';
+   ```
+
+   For Physical Device (find your IP with `ipconfig`):
+   ```javascript
+   const API_BASE_URL = 'http://YOUR_IP:8000/api';
+   ```
+
+2. **Start the app:**
 ```bash
-cd frontend
-npm install
-npx expo start
+cd MiABC-App
+npm start
 ```
 
-Press `i` for iOS simulator or `a` for Android emulator.
+## 📱 Features
 
-## 💾 Database Management
+### Backend (FastAPI)
+- ✅ JWT Token Authentication
+- ✅ User Registration & Login
+- ✅ Trilingual Word Database (English/Spanish/Tamil)
+- ✅ Family Member Management
+- ✅ Reading Texts Management
+- ✅ RESTful API with automatic documentation
+- ✅ SQLAlchemy ORM
+- ✅ Password hashing with bcrypt
 
-- **Source SQL**: `backend/originalWords.sql` (company provided)
-- **Database File**: `backend/miabc.db`
-- **Migrations**: `backend/migrations/`
+### Frontend (React Native)
+- ✅ 12-Step Registration Flow
+- ✅ User Authentication
+- ✅ Dashboard with 8 Learning Categories
+- ✅ Alphabet Learning
+- ✅ Sound Recognition
+- ✅ Word Learning with Audio
+- ✅ Family Member Profiles
+- ✅ Color & Number Learning
+- ✅ Reading Practice
+- ✅ Settings & Configuration
 
-### Ingest Data from SQL
+## 🗄️ Database Schema
 
-```bash
-python ingest_data.py
+### Users
+- User authentication and profile
+- Guardian and learner information
+- Access code validation
+
+### Original Words
+- English, Spanish, Tamil translations
+- Audio file paths
+- Image associations
+- Letter categorization
+
+### Family Members
+- Name and relation
+- Photo storage
+- Audio recordings
+
+### Reading Texts
+- Practice texts
+- Difficulty levels
+- User-specific content
+
+## 🔒 API Authentication
+
+All protected endpoints require a Bearer token:
+
+```javascript
+Authorization: Bearer <JWT_TOKEN>
 ```
 
-This imports all vocabulary data from `originalWords.sql` into `miabc.db`.
-
-## 🛠 Technology Stack
-
-**Backend:**
-- FastAPI - Modern Python web framework
-- SQLAlchemy - ORM for database operations
-- SQLite - Embedded database
-- Firebase Admin SDK - Cloud storage
-- Python-Jose - JWT authentication
-- Pydantic - Data validation
-
-**Frontend:**
-- React Native - Mobile app framework
-- Expo - Development platform
-- React Navigation - Routing
-- AsyncStorage - Local storage
-- Axios - HTTP client
+The token is automatically managed by the API service layer.
 
 ## 📡 API Endpoints
 
-See `backend/API_ENDPOINTS.md` for complete API documentation.
+### Authentication
+```
+POST /api/register    - Register new user
+POST /api/login       - Login user
+GET  /api/me          - Get current user
+```
 
-**Key Endpoints:**
-- `POST /register` - Create new user
-- `POST /login` - Authenticate user
-- `GET /words` - Get vocabulary words
-- `GET /users/{id}` - Get user profile
-- `POST /family-members` - Add family member
+### Words
+```
+GET    /api/words                  - Get all words
+GET    /api/words/initial/{letter} - Get words by initial
+GET    /api/words/{id}             - Get word by ID
+POST   /api/words                  - Create word
+PUT    /api/words/{id}             - Update word
+DELETE /api/words/{id}             - Delete word
+```
 
-## 🗃 Database Schema
+### Family Members
+```
+GET    /api/family-members     - Get all members
+POST   /api/family-members     - Create member
+DELETE /api/family-members/{id}- Delete member
+```
 
-### Tables
-- **users** - User accounts and profiles
-- **originalWords** - Multilingual vocabulary (English, Spanish, Tamil)
-- **familyMembers** - Family member information
-- **readingTexts** - Reading materials and exercises
+### Reading Texts
+```
+GET    /api/reading-texts     - Get all texts
+POST   /api/reading-texts     - Create text
+GET    /api/reading-texts/{id}- Get text by ID
+DELETE /api/reading-texts/{id}- Delete text
+```
 
-### Tamil Support
-Added columns in `originalWords` table:
-- `tamilWord` - Tamil script
-- `tamilPronunciation` - Romanized pronunciation
+## 🛠️ Technology Stack
 
-## 🔐 Environment Variables
+### Backend
+- **FastAPI** - Modern Python web framework
+- **SQLAlchemy** - ORM for database operations
+- **Pydantic** - Data validation
+- **Python-JOSE** - JWT token handling
+- **Passlib** - Password hashing
+- **Uvicorn** - ASGI server
 
-Create `backend/.env`:
+### Frontend
+- **React Native** - Mobile framework
+- **Expo** - Development platform
+- **React Navigation** - Navigation library
+- **Expo SQLite** - Local storage (legacy)
+- **Expo AV** - Audio playback
+
+## 📝 Environment Variables
+
+Create `.env` file in backend folder:
 
 ```env
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=your-secret-key-change-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
 DATABASE_URL=sqlite:///./miabc.db
-FIREBASE_CREDENTIALS_PATH=firebase-credentials.json
-FIREBASE_STORAGE_BUCKET=your-bucket.appspot.com
 ```
 
-## 📦 Dependencies
+## 🔄 Migration from Local SQLite to API
 
-**Backend:**
-```bash
-pip install fastapi uvicorn sqlalchemy python-jose passlib python-multipart firebase-admin
-```
+The app has been migrated from local SQLite to a REST API backend:
 
-**Frontend:**
-```bash
-npm install @react-navigation/native @react-navigation/native-stack expo-image-picker
-```
+**Before:** `import { getUser } from './database/db'`  
+**After:** `import { loginUser } from './database/api'`
 
-## 🔧 Development
+All database operations now go through HTTP requests to the FastAPI backend.
 
-### Start Backend
-```bash
-cd backend
-python -m uvicorn main:app --reload --port 8000
-```
+## 📱 Testing
 
-### Start Frontend
-```bash
-cd frontend
-npx expo start
-```
+### Test Registration
+1. Start backend server
+2. Start React Native app
+3. Click "Register" on login screen
+4. Follow 12-step registration process
+5. Access code: Any unique code
+6. Login with created credentials
 
-### Run Data Ingestion
-```bash
-python ingest_data.py
-```
+### Test API Directly
+Visit http://localhost:8000/docs and use the interactive Swagger UI.
 
-## 📝 Project Documentation
+## 🌐 Network Configuration
 
-- `backend/API_ENDPOINTS.md` - Complete API reference
-- `backend/FIREBASE_SETUP.md` - Firebase configuration guide
-- `backend/TAMIL_INTEGRATION.md` - Tamil language support details
-- `frontend/API_INTEGRATION.md` - Frontend API integration guide
-- `DATABASE.md` - Database schema and usage
+**Important:** Make sure your backend is accessible from your mobile device/emulator:
 
-## 🏢 Company Files
-
-These files are provided by the company and should not be modified:
-- `backend/originalWords.sql` - Official vocabulary data
-- `backend/miabc.db` - Production database
+- **Android Emulator:** Use `10.0.2.2` instead of `localhost`
+- **iOS Simulator:** Use `localhost`  
+- **Physical Device:** Use your computer's IP address (same WiFi network)
 
 ## 📄 License
 
-Proprietary - Company Internal Use Only
+Educational project for MiABC literacy learning platform.
 
----
+## 🤝 Support
 
-**Developed for multilingual literacy education**
+For issues or questions, refer to:
+- Backend README: `backend/README.md`
+- Frontend Guide: `MiABC-App/API_INTEGRATION.md`
