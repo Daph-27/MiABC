@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function RegisterStep12({ navigation, route }) {
   const handleFinish = () => {
     // No backend validation - accept any registration
-    Alert.alert('Success!', 'Registration completed successfully', [
-      { text: 'OK', onPress: () => navigation.navigate('Login') }
-    ]);
+    // Navigate directly to Login for prototype
+    navigation.navigate('Login');
   };
 
   return (
