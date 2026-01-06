@@ -7,17 +7,18 @@ import { Platform } from 'react-native';
 
 const getApiBaseUrl = () => {
   if (Platform.OS === 'android') {
-    // Android Emulator uses production backend
-    return 'https://miabc-backend.onrender.com/api';
+    // Android Emulator uses 10.0.2.2 to access host machine
+    // For physical device, use your computer's IP: http://10.12.48.140:8000/api
+    return 'http://10.0.2.2:8000/api';
   } else if (Platform.OS === 'ios') {
-    // iOS uses production backend
-    return 'https://miabc-backend.onrender.com/api';
+    // iOS Simulator uses localhost
+    return 'http://localhost:8000/api';
   } else if (Platform.OS === 'web') {
-    // Web uses production backend
-    return 'https://miabc-backend.onrender.com/api';
+    // Web uses localhost
+    return 'http://localhost:8000/api';
   } else {
-    // Default to production backend
-    return 'https://miabc-backend.onrender.com/api';
+    // Default to localhost
+    return 'http://localhost:8000/api';
   }
 };
 

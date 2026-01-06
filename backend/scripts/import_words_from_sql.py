@@ -1,11 +1,23 @@
 """
 Import words from originalWords.sql to database
+
+Run from the backend directory:
+    python -m scripts.import_words_from_sql
 """
 import sqlite3
 import re
+import os
+
+# Get the project root directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.dirname(script_dir)
+
+# Paths to data files
+sql_file = os.path.join(backend_dir, 'data', 'originalWords.sql')
+db_file = os.path.join(backend_dir, 'data', 'miabc.db')
 
 # Read SQL file
-with open('originalWords.sql', 'r', encoding='utf-8') as f:
+with open(sql_file, 'r', encoding='utf-8') as f:
     sql_content = f.read()
 
 # The SQL has one INSERT with multiple value tuples separated by commas
@@ -24,7 +36,7 @@ tuples = re.findall(r'\((.*?)\)(?:,|\s*$)', values_section, re.DOTALL)
 print(f"Found {len(tuples)} word entries in SQL file")
 
 # Connect to database
-conn = sqlite3.connect('miabc.db')
+conn = sqlite3.connect(db_file)
 cursor = conn.cursor()
 
 # Clear existing words
@@ -80,4 +92,4 @@ conn.commit()
 conn.close()
 
 print(f"\n✅ Successfully imported {inserted} words!")
-print(f"\nRun 'python view_database.py' to verify")
+print(f"\nRun 'python -m scripts.view_database' to verify")

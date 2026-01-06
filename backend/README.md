@@ -2,6 +2,61 @@
 
 FastAPI backend for the MiABC educational app with Tamil language support.
 
+## Project Structure
+
+```
+backend/
+├── app/                          # Main application package
+│   ├── __init__.py
+│   ├── main.py                   # FastAPI app initialization
+│   ├── config.py                 # Settings and configuration
+│   ├── database.py               # Database connection
+│   ├── dependencies.py           # Shared dependencies (auth)
+│   │
+│   ├── core/                     # Core utilities
+│   │   ├── __init__.py
+│   │   ├── security.py           # JWT and password hashing
+│   │   └── firebase.py           # Firebase Storage integration
+│   │
+│   ├── models/                   # SQLAlchemy models
+│   │   ├── __init__.py
+│   │   ├── user.py               # User, FamilyMember
+│   │   ├── word.py               # OriginalWord, ReadingText
+│   │   └── progress.py           # Progress tracking models
+│   │
+│   ├── schemas/                  # Pydantic schemas
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   ├── word.py
+│   │   └── progress.py
+│   │
+│   └── routers/                  # API endpoints
+│       ├── __init__.py
+│       ├── auth.py               # Authentication endpoints
+│       ├── users.py              # User management
+│       ├── family.py             # Family members
+│       ├── words.py              # Word database
+│       ├── reading.py            # Reading texts
+│       ├── uploads.py            # File uploads
+│       ├── progress.py           # Progress tracking
+│       └── analytics.py          # Learning analytics
+│
+├── scripts/                      # Utility scripts
+│   ├── import_words_from_sql.py
+│   ├── populate_tamil_words.py
+│   └── view_database.py
+│
+├── data/                         # Data files
+│   ├── miabc.db                  # SQLite database
+│   └── originalWords.sql         # Word data SQL
+│
+├── run.py                        # Application entry point
+├── requirements.txt              # Python dependencies
+├── .env                          # Environment variables
+├── .gitignore
+└── README.md
+```
+
 ## Features
 
 - JWT Authentication
@@ -9,6 +64,9 @@ FastAPI backend for the MiABC educational app with Tamil language support.
 - Family member management
 - Word database with trilingual support (English/Spanish/Tamil)
 - Reading texts management
+- Learner progress tracking
+- Learning analytics
+- Firebase Storage integration
 - RESTful API endpoints
 
 ## Setup
@@ -39,12 +97,12 @@ Edit `.env` file and set your SECRET_KEY
 
 6. Run the server:
 ```bash
-python main.py
+python run.py
 ```
 
 Or use uvicorn directly:
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at `http://localhost:8000`
@@ -86,6 +144,39 @@ Once the server is running, visit:
 - `POST /api/reading-texts` - Create reading text
 - `DELETE /api/reading-texts/{text_id}` - Delete reading text
 
+### File Uploads
+- `POST /api/upload/image` - Upload image to Firebase
+- `POST /api/upload/audio` - Upload audio to Firebase
+- `POST /api/upload/profile-photo` - Upload profile photo
+
+### Progress Tracking
+- `POST /api/progress` - Track learner progress
+- `GET /api/progress` - Get learner progress
+- `POST /api/quiz/attempt` - Record quiz attempt
+- `GET /api/quiz/attempts` - Get quiz attempts
+- `POST /api/pronunciation/attempt` - Record pronunciation attempt
+- `POST /api/session/start` - Start learning session
+- `PUT /api/session/{session_id}` - End learning session
+
+### Analytics
+- `GET /api/analytics/overview` - Get comprehensive analytics
+- `GET /api/analytics/module/{module_name}` - Get module statistics
+
+## Utility Scripts
+
+Run scripts from the backend directory:
+
+```bash
+# View database contents
+python -m scripts.view_database
+
+# Import words from SQL file
+python -m scripts.import_words_from_sql
+
+# Populate Tamil words
+python -m scripts.populate_tamil_words
+```
+
 ## Database
 
 SQLite database with the following tables:
@@ -93,6 +184,10 @@ SQLite database with the following tables:
 - `familyMembers` - Family member profiles
 - `originalWords` - Word database with Tamil support
 - `readingTexts` - Reading practice texts
+- `learnerProgress` - Progress tracking
+- `quizAttempts` - Quiz attempt records
+- `pronunciationAttempts` - Pronunciation practice records
+- `learningSessions` - Learning session tracking
 
 ## Security
 

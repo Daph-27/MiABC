@@ -1,18 +1,24 @@
 """
 Simple Database Viewer for MiABC
 Shows all data stored in the SQLite database
+
+Run from the backend directory:
+    python -m scripts.view_database
 """
 import sqlite3
 import os
 
-db_path = 'miabc.db'
+# Get the project root directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.dirname(script_dir)
+db_path = os.path.join(backend_dir, 'data', 'miabc.db')
 
 if not os.path.exists(db_path):
-    print(f"❌ Database not found at: {os.path.abspath(db_path)}")
+    print(f"❌ Database not found at: {db_path}")
     exit(1)
 
 print("\n" + "="*80)
-print(f"📊 DATABASE VIEWER - {os.path.abspath(db_path)}")
+print(f"📊 DATABASE VIEWER - {db_path}")
 print("="*80)
 
 conn = sqlite3.connect(db_path)
@@ -94,5 +100,5 @@ print("="*80)
 print("  1. DB Browser for SQLite: https://sqlitebrowser.org/")
 print("  2. VS Code Extension: Search 'SQLite' in Extensions")
 print("  3. DBeaver (Universal): https://dbeaver.io/")
-print(f"\n  📁 Database Path: {os.path.abspath(db_path)}")
+print(f"\n  📁 Database Path: {db_path}")
 print("="*80 + "\n")

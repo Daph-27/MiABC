@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { initDatabase } from './database/api';
 
 // Import screens
@@ -35,6 +35,22 @@ import ConfiguracionScreen from './screens/ConfiguracionScreen';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+// Back button component for header
+const BackButton = ({ navigation }) => (
+  <TouchableOpacity
+    style={styles.backButton}
+    onPress={() => navigation.navigate('Dashboard')}
+  >
+    <Text style={styles.backButtonText}>←</Text>
+  </TouchableOpacity>
+);
+
+// Screen options with back button (for non-Dashboard screens)
+const getScreenOptionsWithBack = (title) => ({ navigation }) => ({
+  title,
+  headerLeft: () => <BackButton navigation={navigation} />,
+});
+
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
@@ -52,19 +68,31 @@ function DrawerNavigator() {
       }}
     >
       <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Home' }} />
-      <Drawer.Screen name="Alfabeto" component={AlfabetoScreen} options={{ title: 'Alphabet' }} />
-      <Drawer.Screen name="Sonidos" component={SonidosScreen} options={{ title: 'Sounds' }} />
-      <Drawer.Screen name="Palabras" component={PalabrasScreen} options={{ title: 'Words' }} />
-      <Drawer.Screen name="Completar" component={CompletarScreen} options={{ title: 'Complete' }} />
-      <Drawer.Screen name="Familia" component={FamiliaScreen} options={{ title: 'Family' }} />
-      <Drawer.Screen name="Colores" component={ColoresScreen} options={{ title: 'Colors' }} />
-      <Drawer.Screen name="Numeros" component={NumerosScreen} options={{ title: 'Numbers' }} />
-      <Drawer.Screen name="Figuras" component={FigurasScreen} options={{ title: 'Geometric Figures' }} />
-      <Drawer.Screen name="YaSeLeer" component={YaSeLeerScreen} options={{ title: 'I Can Read' }} />
-      <Drawer.Screen name="Configuracion" component={ConfiguracionScreen} options={{ title: 'Settings' }} />
+      <Drawer.Screen name="Alfabeto" component={AlfabetoScreen} options={getScreenOptionsWithBack('Alphabet')} />
+      <Drawer.Screen name="Sonidos" component={SonidosScreen} options={getScreenOptionsWithBack('Sounds')} />
+      <Drawer.Screen name="Palabras" component={PalabrasScreen} options={getScreenOptionsWithBack('Words')} />
+      <Drawer.Screen name="Completar" component={CompletarScreen} options={getScreenOptionsWithBack('Complete')} />
+      <Drawer.Screen name="Familia" component={FamiliaScreen} options={getScreenOptionsWithBack('Family')} />
+      <Drawer.Screen name="Colores" component={ColoresScreen} options={getScreenOptionsWithBack('Colors')} />
+      <Drawer.Screen name="Numeros" component={NumerosScreen} options={getScreenOptionsWithBack('Numbers')} />
+      <Drawer.Screen name="Figuras" component={FigurasScreen} options={getScreenOptionsWithBack('Geometric Figures')} />
+      <Drawer.Screen name="YaSeLeer" component={YaSeLeerScreen} options={getScreenOptionsWithBack('I Can Read')} />
+      <Drawer.Screen name="Configuracion" component={ConfiguracionScreen} options={getScreenOptionsWithBack('Settings')} />
     </Drawer.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    marginLeft: 15,
+    padding: 5,
+  },
+  backButtonText: {
+    color: '#FFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+});
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);

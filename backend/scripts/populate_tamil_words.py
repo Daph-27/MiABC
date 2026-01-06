@@ -1,14 +1,25 @@
 """
 Populate database with Tamil words from Firebase
 This script adds sample words with Tamil translations to the database
+
+Run from the backend directory:
+    python -m scripts.populate_tamil_words
 """
+import sys
+import os
+
+# Add parent directory to path for imports
+script_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = os.path.dirname(script_dir)
+sys.path.insert(0, backend_dir)
 
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-import models
+from app.database import SessionLocal, engine
+from app.models import OriginalWord
+from app.database import Base
 
 # Create tables
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 # Sample words with Tamil translations
 SAMPLE_WORDS = [
@@ -136,13 +147,14 @@ SAMPLE_WORDS = [
     }
 ]
 
+
 def populate_database():
     """Populate database with sample Tamil words"""
     db = SessionLocal()
     
     try:
         # Check if words already exist
-        existing_words = db.query(models.OriginalWord).count()
+        existing_words = db.query(OriginalWord).count()
         
         if existing_words > 0:
             print(f"⚠️ Database already has {existing_words} words")
@@ -155,12 +167,12 @@ def populate_database():
         added = 0
         for word_data in SAMPLE_WORDS:
             # Check if word already exists
-            existing = db.query(models.OriginalWord).filter(
-                models.OriginalWord.englishName == word_data["englishName"]
+            existing = db.query(OriginalWord).filter(
+                OriginalWord.englishName == word_data["englishName"]
             ).first()
             
             if not existing:
-                word = models.OriginalWord(**word_data)
+                word = OriginalWord(**word_data)
                 db.add(word)
                 added += 1
                 print(f"✅ Added: {word_data['englishName']} / {word_data['spanishName']} / {word_data['tamilWord']}")
@@ -169,13 +181,14 @@ def populate_database():
         
         db.commit()
         print(f"\n🎉 Successfully added {added} words with Tamil translations!")
-        print(f"📊 Total words in database: {db.query(models.OriginalWord).count()}")
+        print(f"📊 Total words in database: {db.query(OriginalWord).count()}")
         
     except Exception as e:
         print(f"❌ Error: {e}")
         db.rollback()
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     print("🚀 MiABC Database Population Script")

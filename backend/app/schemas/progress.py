@@ -1,102 +1,11 @@
-from pydantic import BaseModel, EmailStr
+"""
+Progress and Analytics Schemas
+"""
+from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-# User Schemas
-class UserBase(BaseModel):
-    accessCode: str
-    guardianName: str
-    guardianRelation: Optional[str] = None
-    guardianEmail: Optional[str] = None
-    guardianPhone: Optional[str] = None
-    learnerName: str
-    learnerAge: Optional[int] = None
-    learnerGrade: Optional[str] = None
-    username: str
-    parentalLock: Optional[str] = None
-    profilePhoto: Optional[str] = None
 
-class UserCreate(UserBase):
-    password: str
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-class User(UserBase):
-    userId: int
-    createdAt: datetime
-    
-    class Config:
-        from_attributes = True
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    user: User
-
-# Family Member Schemas
-class FamilyMemberBase(BaseModel):
-    name: str
-    relation: str
-    photoUri: Optional[str] = None
-
-class FamilyMemberCreate(FamilyMemberBase):
-    pass
-
-class FamilyMember(FamilyMemberBase):
-    id: int
-    userId: int
-    createdAt: datetime
-    
-    class Config:
-        from_attributes = True
-
-# Word Schemas
-class WordBase(BaseModel):
-    englishName: str
-    englishSound: Optional[str] = None
-    spanishName: Optional[str] = None
-    spanishSound: Optional[str] = None
-    tamilWord: Optional[str] = None
-    tamilPronunciation: Optional[str] = None
-    imagePath: Optional[str] = None
-    initials: Optional[str] = None
-    recordFlag: Optional[str] = None
-    key: Optional[str] = None
-    type: Optional[str] = None
-    tema: Optional[str] = None
-    letra: Optional[str] = None
-
-class WordCreate(WordBase):
-    pass
-
-class Word(WordBase):
-    id: int
-    createdAt: datetime
-    dateCompleted: Optional[datetime] = None
-    
-    class Config:
-        from_attributes = True
-
-# Reading Text Schemas
-class ReadingTextBase(BaseModel):
-    title: str
-    content: str
-    language: str = "english"
-    level: Optional[str] = None
-
-class ReadingTextCreate(ReadingTextBase):
-    pass
-
-class ReadingText(ReadingTextBase):
-    id: int
-    userId: int
-    createdAt: datetime
-    updatedAt: datetime
-    
-    class Config:
-        from_attributes = True
 # Learner Progress Schemas
 class LearnerProgressBase(BaseModel):
     moduleName: str
@@ -108,8 +17,10 @@ class LearnerProgressBase(BaseModel):
     timeSpent: Optional[int] = None
     language: str = "english"
 
+
 class LearnerProgressCreate(LearnerProgressBase):
     pass
+
 
 class LearnerProgress(LearnerProgressBase):
     id: int
@@ -119,6 +30,7 @@ class LearnerProgress(LearnerProgressBase):
     
     class Config:
         from_attributes = True
+
 
 # Quiz Attempt Schemas
 class QuizAttemptBase(BaseModel):
@@ -130,8 +42,10 @@ class QuizAttemptBase(BaseModel):
     responseTime: Optional[int] = None
     language: str = "english"
 
+
 class QuizAttemptCreate(QuizAttemptBase):
     pass
+
 
 class QuizAttempt(QuizAttemptBase):
     id: int
@@ -141,6 +55,7 @@ class QuizAttempt(QuizAttemptBase):
     class Config:
         from_attributes = True
 
+
 # Pronunciation Attempt Schemas
 class PronunciationAttemptBase(BaseModel):
     wordId: Optional[int] = None
@@ -149,8 +64,10 @@ class PronunciationAttemptBase(BaseModel):
     accuracyScore: Optional[int] = None
     language: str = "english"
 
+
 class PronunciationAttemptCreate(PronunciationAttemptBase):
     pass
+
 
 class PronunciationAttempt(PronunciationAttemptBase):
     id: int
@@ -159,6 +76,7 @@ class PronunciationAttempt(PronunciationAttemptBase):
     
     class Config:
         from_attributes = True
+
 
 # Learning Session Schemas
 class LearningSessionBase(BaseModel):
@@ -169,8 +87,10 @@ class LearningSessionBase(BaseModel):
     itemsCompleted: int = 0
     averageScore: Optional[int] = None
 
+
 class LearningSessionCreate(BaseModel):
     pass
+
 
 class LearningSession(LearningSessionBase):
     id: int
@@ -179,6 +99,7 @@ class LearningSession(LearningSessionBase):
     
     class Config:
         from_attributes = True
+
 
 # Analytics Schemas
 class LearnerAnalytics(BaseModel):
@@ -190,6 +111,7 @@ class LearnerAnalytics(BaseModel):
     weakAreas: List[str]
     recentActivity: List[dict]
     
+
 class ModuleStats(BaseModel):
     moduleName: str
     completionRate: float

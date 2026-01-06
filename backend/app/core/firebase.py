@@ -1,29 +1,28 @@
+"""
+Firebase Storage Integration
+"""
 import firebase_admin
 from firebase_admin import credentials, storage
 import os
-from dotenv import load_dotenv
 import base64
 from io import BytesIO
-from PIL import Image
 
-load_dotenv()
+from app.config import FIREBASE_CREDENTIALS_PATH, FIREBASE_STORAGE_BUCKET
 
-# Initialize Firebase Admin SDK
+
 def init_firebase():
     """Initialize Firebase Admin SDK with credentials"""
     try:
-        cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase-credentials.json")
-        
         # Check if Firebase is already initialized
         if not firebase_admin._apps:
-            if os.path.exists(cred_path):
-                cred = credentials.Certificate(cred_path)
+            if os.path.exists(FIREBASE_CREDENTIALS_PATH):
+                cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
                 firebase_admin.initialize_app(cred, {
-                    'storageBucket': os.getenv("FIREBASE_STORAGE_BUCKET", "miabc-a2e3a.appspot.com")
+                    'storageBucket': FIREBASE_STORAGE_BUCKET
                 })
                 print("✅ Firebase initialized successfully")
             else:
-                print(f"⚠️ Firebase credentials not found at {cred_path}")
+                print(f"⚠️ Firebase credentials not found at {FIREBASE_CREDENTIALS_PATH}")
                 print("Firebase storage features will be disabled")
                 return None
         
@@ -33,13 +32,14 @@ def init_firebase():
         print("Continuing without Firebase storage")
         return None
 
-# Get Firebase bucket
+
 def get_bucket():
     """Get Firebase Storage bucket"""
     try:
         return storage.bucket()
     except:
         return None
+
 
 def upload_image_to_firebase(image_data: str, path: str) -> str:
     """
@@ -75,6 +75,7 @@ def upload_image_to_firebase(image_data: str, path: str) -> str:
         print(f"Error uploading to Firebase: {e}")
         return image_data  # Return original on error
 
+
 def upload_audio_to_firebase(audio_data: bytes, path: str, content_type: str = 'audio/mpeg') -> str:
     """
     Upload audio file to Firebase Storage
@@ -104,6 +105,7 @@ def upload_audio_to_firebase(audio_data: bytes, path: str, content_type: str = '
         print(f"Error uploading audio to Firebase: {e}")
         return ""
 
+
 def delete_from_firebase(path: str) -> bool:
     """
     Delete file from Firebase Storage
@@ -126,6 +128,7 @@ def delete_from_firebase(path: str) -> bool:
     except Exception as e:
         print(f"Error deleting from Firebase: {e}")
         return False
+
 
 def get_firebase_url(path: str) -> str:
     """
