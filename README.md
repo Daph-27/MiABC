@@ -6,68 +6,108 @@ Educational app for literacy learning in Spanish, English, and Tamil languages.
 
 ```
 MIABC/
-├── backend/                 # FastAPI Backend
-│   ├── main.py             # API endpoints
-│   ├── models.py           # SQLAlchemy models
-│   ├── schemas.py          # Pydantic schemas
-│   ├── database.py         # Database configuration
-│   ├── auth.py             # JWT authentication
-│   ├── requirements.txt    # Python dependencies
-│   ├── .env                # Environment variables
-│   └── start-server.bat    # Windows startup script
+├── backend/                    # FastAPI Backend
+│   ├── app/
+│   │   ├── main.py            # App entry point
+│   │   ├── config.py          # Configuration settings
+│   │   ├── database.py        # Database configuration
+│   │   ├── dependencies.py    # Dependency injection
+│   │   ├── core/              # Core utilities (Firebase)
+│   │   ├── models/            # SQLAlchemy models
+│   │   ├── schemas/           # Pydantic schemas
+│   │   └── routers/           # API route handlers
+│   │       ├── auth.py        # Authentication routes
+│   │       ├── users.py       # User management
+│   │       ├── family.py      # Family members
+│   │       ├── words.py       # Word database
+│   │       ├── reading.py     # Reading texts
+│   │       ├── uploads.py     # File uploads
+│   │       ├── progress.py    # Learning progress
+│   │       └── analytics.py   # Usage analytics
+│   ├── data/                  # Data files
+│   ├── scripts/               # Utility scripts
+│   ├── run.py                 # Server startup
+│   ├── requirements.txt       # Python dependencies
+│   └── .env                   # Environment variables
 │
-└── MiABC-App/              # React Native Frontend
-    ├── App.js              # Main navigation
-    ├── database/
-    │   └── api.js          # API service layer
-    ├── screens/
-    │   ├── LoginScreen.js
-    │   ├── DashboardScreen.js
-    │   ├── registration/   # 12-step registration
-    │   └── categories/     # Learning modules
-    └── package.json
-
+└── frontend/                   # React Native (Expo) Frontend
+    ├── app/
+    │   ├── _layout.tsx        # Root layout
+    │   ├── index.tsx          # Entry point
+    │   ├── auth.tsx           # Sign in/up screen
+    │   ├── register.tsx       # Registration flow
+    │   └── dashboard.tsx      # Main dashboard
+    ├── components/            # Reusable components
+    │   ├── ui/                # UI primitives
+    │   ├── AuthBackground.tsx # Auth screen background
+    │   └── ...                # Other components
+    ├── services/
+    │   └── api.ts             # API service layer
+    ├── hooks/                 # Custom React hooks
+    ├── constants/             # App constants
+    ├── assets/                # Static assets
+    ├── package.json           # Node dependencies
+    └── tsconfig.json          # TypeScript config
 ```
 
 ## 🚀 Quick Start
 
 ### Backend Setup
 
-1. **Start the backend server:**
+1. **Navigate to backend and set up environment:**
 ```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate  # Windows
+# source venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
-python main.py
 ```
 
-Or double-click `start-server.bat` on Windows.
+2. **Configure environment variables:**
+Create a `.env` file in the backend folder with:
+```env
+SECRET_KEY=your-secret-key-change-in-production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+DATABASE_URL=sqlite:///./miabc.db
+```
+
+3. **Start the server:**
+```bash
+python run.py
+```
 
 The API will run on `http://localhost:8000`
 
-2. **View API Documentation:**
+4. **View API Documentation:**
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
 ### Frontend Setup
 
-1. **Update API configuration** in `MiABC-App/database/api.js`:
+1. **Navigate to frontend and install dependencies:**
+```bash
+cd frontend
+npm install
+```
+
+2. **Update API configuration** in `frontend/services/api.ts`:
    
    For Android Emulator:
-   ```javascript
+   ```typescript
    const API_BASE_URL = 'http://10.0.2.2:8000/api';
    ```
 
    For Physical Device (find your IP with `ipconfig`):
-   ```javascript
+   ```typescript
    const API_BASE_URL = 'http://YOUR_IP:8000/api';
    ```
 
-2. **Start the app:**
+3. **Start the app:**
 ```bash
-cd MiABC-App
 npm start
+# or
+npx expo start
 ```
 
 ## 📱 Features
@@ -78,21 +118,24 @@ npm start
 - ✅ Trilingual Word Database (English/Spanish/Tamil)
 - ✅ Family Member Management
 - ✅ Reading Texts Management
+- ✅ Learning Progress Tracking
+- ✅ Analytics Dashboard
+- ✅ Firebase Integration (File Uploads)
 - ✅ RESTful API with automatic documentation
-- ✅ SQLAlchemy ORM
+- ✅ SQLAlchemy ORM with Pydantic validation
 - ✅ Password hashing with bcrypt
 
-### Frontend (React Native)
-- ✅ 12-Step Registration Flow
-- ✅ User Authentication
-- ✅ Dashboard with 8 Learning Categories
-- ✅ Alphabet Learning
-- ✅ Sound Recognition
-- ✅ Word Learning with Audio
-- ✅ Family Member Profiles
-- ✅ Color & Number Learning
-- ✅ Reading Practice
-- ✅ Settings & Configuration
+### Frontend (React Native + Expo)
+- ✅ TypeScript Support
+- ✅ Expo Router Navigation
+- ✅ Sign In / Sign Up Flow
+- ✅ Multi-step Registration Process
+- ✅ Dashboard with Learning Categories
+- ✅ Secure Token Storage (Expo SecureStore)
+- ✅ Image Picker Integration
+- ✅ Audio Playback Support
+- ✅ Animations (React Native Reanimated)
+- ✅ Haptic Feedback
 
 ## 🗄️ Database Schema
 
@@ -117,11 +160,16 @@ npm start
 - Difficulty levels
 - User-specific content
 
+### Learner Progress
+- Quiz attempts
+- Pronunciation attempts
+- Learning sessions
+
 ## 🔒 API Authentication
 
 All protected endpoints require a Bearer token:
 
-```javascript
+```typescript
 Authorization: Bearer <JWT_TOKEN>
 ```
 
@@ -131,9 +179,14 @@ The token is automatically managed by the API service layer.
 
 ### Authentication
 ```
-POST /api/register    - Register new user
-POST /api/login       - Login user
-GET  /api/me          - Get current user
+POST /api/auth/login     - Login user
+POST /api/auth/register  - Register new user
+```
+
+### Users
+```
+GET  /api/users/me       - Get current user
+PUT  /api/users/me       - Update current user
 ```
 
 ### Words
@@ -148,65 +201,81 @@ DELETE /api/words/{id}             - Delete word
 
 ### Family Members
 ```
-GET    /api/family-members     - Get all members
-POST   /api/family-members     - Create member
-DELETE /api/family-members/{id}- Delete member
+GET    /api/family          - Get all members
+POST   /api/family          - Create member
+DELETE /api/family/{id}     - Delete member
 ```
 
 ### Reading Texts
 ```
-GET    /api/reading-texts     - Get all texts
-POST   /api/reading-texts     - Create text
-GET    /api/reading-texts/{id}- Get text by ID
-DELETE /api/reading-texts/{id}- Delete text
+GET    /api/reading         - Get all texts
+POST   /api/reading         - Create text
+GET    /api/reading/{id}    - Get text by ID
+DELETE /api/reading/{id}    - Delete text
+```
+
+### Progress
+```
+GET    /api/progress        - Get learning progress
+POST   /api/progress        - Record progress
+```
+
+### Analytics
+```
+GET    /api/analytics       - Get usage analytics
+```
+
+### Uploads
+```
+POST   /api/uploads/image   - Upload image
+POST   /api/uploads/audio   - Upload audio
 ```
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **FastAPI** - Modern Python web framework
-- **SQLAlchemy** - ORM for database operations
-- **Pydantic** - Data validation
-- **Python-JOSE** - JWT token handling
-- **Passlib** - Password hashing
-- **Uvicorn** - ASGI server
+| Technology | Purpose |
+|------------|---------|
+| **FastAPI** | Modern Python web framework |
+| **SQLAlchemy** | ORM for database operations |
+| **Pydantic** | Data validation & serialization |
+| **Python-JOSE** | JWT token handling |
+| **Passlib + bcrypt** | Password hashing |
+| **Firebase Admin** | Cloud file storage |
+| **Pillow** | Image processing |
+| **Uvicorn** | ASGI server |
 
 ### Frontend
-- **React Native** - Mobile framework
-- **Expo** - Development platform
-- **React Navigation** - Navigation library
-- **Expo SQLite** - Local storage (legacy)
-- **Expo AV** - Audio playback
+| Technology | Purpose |
+|------------|---------|
+| **React Native** | Cross-platform mobile framework |
+| **Expo SDK 54** | Development platform |
+| **Expo Router** | File-based navigation |
+| **TypeScript** | Type safety |
+| **React Native Reanimated** | Smooth animations |
+| **Expo SecureStore** | Secure token storage |
+| **Expo AV** | Audio/Video playback |
+| **Expo Image Picker** | Image selection |
 
 ## 📝 Environment Variables
 
-Create `.env` file in backend folder:
-
+### Backend `.env`
 ```env
 SECRET_KEY=your-secret-key-change-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
 DATABASE_URL=sqlite:///./miabc.db
+FIREBASE_CREDENTIALS=path/to/firebase-credentials.json
 ```
-
-## 🔄 Migration from Local SQLite to API
-
-The app has been migrated from local SQLite to a REST API backend:
-
-**Before:** `import { getUser } from './database/db'`  
-**After:** `import { loginUser } from './database/api'`
-
-All database operations now go through HTTP requests to the FastAPI backend.
 
 ## 📱 Testing
 
-### Test Registration
-1. Start backend server
-2. Start React Native app
-3. Click "Register" on login screen
-4. Follow 12-step registration process
-5. Access code: Any unique code
-6. Login with created credentials
+### Test Registration Flow
+1. Start backend server (`python run.py` in backend folder)
+2. Start React Native app (`npm start` in frontend folder)
+3. Click "Sign Up" on auth screen
+4. Follow the registration process
+5. Login with created credentials
 
 ### Test API Directly
 Visit http://localhost:8000/docs and use the interactive Swagger UI.
@@ -215,9 +284,22 @@ Visit http://localhost:8000/docs and use the interactive Swagger UI.
 
 **Important:** Make sure your backend is accessible from your mobile device/emulator:
 
-- **Android Emulator:** Use `10.0.2.2` instead of `localhost`
-- **iOS Simulator:** Use `localhost`  
-- **Physical Device:** Use your computer's IP address (same WiFi network)
+| Platform | Host Address |
+|----------|--------------|
+| **Android Emulator** | `10.0.2.2` |
+| **iOS Simulator** | `localhost` |
+| **Physical Device** | Your computer's IP (same WiFi) |
+
+## 📂 Scripts
+
+### Backend Scripts
+Located in `backend/scripts/`:
+- Data injection utilities
+- Database migration scripts
+
+### Frontend Scripts
+Located in `frontend/scripts/`:
+- Project reset utility
 
 ## 📄 License
 
@@ -227,4 +309,4 @@ Educational project for MiABC literacy learning platform.
 
 For issues or questions, refer to:
 - Backend README: `backend/README.md`
-- Frontend Guide: `MiABC-App/API_INTEGRATION.md`
+- Frontend README: `frontend/README.md`
