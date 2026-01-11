@@ -7,11 +7,23 @@ interface ModuleProgress {
     passed: boolean;
 }
 
+interface UserData {
+    email: string;
+    learnerName: string;
+    grade: string;
+    representativeName: string;
+}
+
 interface UserContextType {
     progress: Record<string, ModuleProgress>;
     unlockModule: (moduleId: string) => void;
     updateScore: (moduleId: string, score: number) => void;
     isUnlocked: (moduleId: string) => boolean;
+    isAuthenticated: boolean;
+    userData: UserData | null;
+    login: (email: string, password: string) => Promise<boolean>;
+    register: (formData: any) => Promise<boolean>;
+    logout: () => void;
 }
 
 const defaultProgress: Record<string, ModuleProgress> = {
@@ -23,12 +35,61 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [progress, setProgress] = useState<Record<string, ModuleProgress>>(defaultProgress);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [userData, setUserData] = useState<UserData | null>(null);
 
     // In a real app, load from Firestore/AsyncStorage here
     useEffect(() => {
-        // Simulated load
+        // Simulated load - check if user is logged in
         console.log('Loading user progress...');
+        // TODO: Check AsyncStorage for saved auth token
     }, []);
+
+    const login = async (email: string, password: string): Promise<boolean> => {
+        try {
+            // TODO: Implement actual Firebase authentication
+            console.log('Logging in:', email);
+            
+            // Simulated login for development
+            if (email && password) {
+                setIsAuthenticated(true);
+                setUserData({
+                    email,
+                    learnerName: 'Test Learner',
+                    grade: 'First',
+                    representativeName: 'Test Parent',
+                });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
+        }
+    };
+
+    const register = async (formData: any): Promise<boolean> => {
+        try {
+            // TODO: Implement actual Firebase registration
+            console.log('Registering user:', formData);
+            
+            // Simulated registration for development
+            if (formData.email && formData.password) {
+                // Registration successful, but don't auto-login
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Registration error:', error);
+            return false;
+        }
+    };
+
+    const logout = () => {
+        setIsAuthenticated(false);
+        setUserData(null);
+        setProgress(defaultProgress);
+    };
 
     const unlockModule = (moduleId: string) => {
         setProgress(prev => ({
@@ -68,7 +129,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <UserContext.Provider value={{ progress, unlockModule, updateScore, isUnlocked }}>
+        <UserContext.Provider value={{ 
+            progress, 
+            unlockModule, 
+            updateScore, 
+            isUnlocked,
+            isAuthenticated,
+            userData,
+            login,
+            register,
+            logout,
+        }}>
             {children}
         </UserContext.Provider>
     );

@@ -5,6 +5,277 @@
     "Vowels",
     "Consonants"
   ],
-  "items": [],
-  "validated": false
+  "items": [
+    {
+      "id": "vowel_1",
+      "category": "Vowels",
+      "character": "அ",
+      "transliteration": "a",
+      "pronunciation": "ah",
+      "example": "அம்மா (amma - mother)",
+      "audioFile": "alphabet/vowels/a.mp3"
+    },
+    {
+      "id": "vowel_2",
+      "category": "Vowels",
+      "character": "ஆ",
+      "transliteration": "ā",
+      "pronunciation": "aa",
+      "example": "ஆடு (aadu - goat)",
+      "audioFile": "alphabet/vowels/aa.mp3"
+    },
+    {
+      "id": "vowel_3",
+      "category": "Vowels",
+      "character": "இ",
+      "transliteration": "i",
+      "pronunciation": "i",
+      "example": "இல்லம் (illam - home)",
+      "audioFile": "alphabet/vowels/i.mp3"
+    },
+    {
+      "id": "vowel_4",
+      "category": "Vowels",
+      "character": "ஈ",
+      "transliteration": "ī",
+      "pronunciation": "ee",
+      "example": "ஈ (ee - fly)",
+      "audioFile": "alphabet/vowels/ee.mp3"
+    },
+    {
+      "id": "vowel_5",
+      "category": "Vowels",
+      "character": "உ",
+      "transliteration": "u",
+      "pronunciation": "u",
+      "example": "உப்பு (uppu - salt)",
+      "audioFile": "alphabet/vowels/u.mp3"
+    },
+    {
+      "id": "vowel_6",
+      "category": "Vowels",
+      "character": "ஊ",
+      "transliteration": "ū",
+      "pronunciation": "oo",
+      "example": "ஊர் (oor - village)",
+      "audioFile": "alphabet/vowels/oo.mp3"
+    },
+    {
+      "id": "vowel_7",
+      "category": "Vowels",
+      "character": "எ",
+      "transliteration": "e",
+      "pronunciation": "e",
+      "example": "எலி (eli - rat)",
+      "audioFile": "alphabet/vowels/e.mp3"
+    },
+    {
+      "id": "vowel_8",
+      "category": "Vowels",
+      "character": "ஏ",
+      "transliteration": "ē",
+      "pronunciation": "ay",
+      "example": "ஏணி (aeni - ladder)",
+      "audioFile": "alphabet/vowels/ay.mp3"
+    },
+    {
+      "id": "vowel_9",
+      "category": "Vowels",
+      "character": "ஐ",
+      "transliteration": "ai",
+      "pronunciation": "ai",
+      "example": "ஐந்து (ainthu - five)",
+      "audioFile": "alphabet/vowels/ai.mp3"
+    },
+    {
+      "id": "vowel_10",
+      "category": "Vowels",
+      "character": "ஒ",
+      "transliteration": "o",
+      "pronunciation": "o",
+      "example": "ஒட்டகம் (ottakam - camel)",
+      "audioFile": "alphabet/vowels/o.mp3"
+    },
+    {
+      "id": "vowel_11",
+      "category": "Vowels",
+      "character": "ஓ",
+      "transliteration": "ō",
+      "pronunciation": "oh",
+      "example": "ஓடு (odu - run)",
+      "audioFile": "alphabet/vowels/oh.mp3"
+    },
+    {
+      "id": "vowel_12",
+      "category": "Vowels",
+      "character": "ஔ",
+      "transliteration": "au",
+      "pronunciation": "ow",
+      "example": "ஔவையார் (Auvaiyar - poet)",
+      "audioFile": "alphabet/vowels/au.mp3"
+    },
+    {
+      "id": "consonant_1",
+      "category": "Consonants",
+      "character": "க்",
+      "transliteration": "k",
+      "pronunciation": "k",
+      "example": "கண் (kan - eye)",
+      "audioFile": "alphabet/consonants/k.mp3"
+    },
+    {
+      "id": "consonant_2",
+      "category": "Consonants",
+      "character": "ங்",
+      "transliteration": "ṅ",
+      "pronunciation": "ng",
+      "example": "அங்கு (angu - there)",
+      "audioFile": "alphabet/consonants/ng.mp3"
+    },
+    {
+      "id": "consonant_3",
+      "category": "Consonants",
+      "character": "ச்",
+      "transliteration": "c",
+      "pronunciation": "ch",
+      "example": "சட்டை (chattai - shirt)",
+      "audioFile": "alphabet/consonants/ch.mp3"
+    },
+    {
+      "id": "consonant_4",
+      "category": "Consonants",
+      "character": "ஞ்",
+      "transliteration": "ñ",
+      "pronunciation": "gn",
+      "example": "ஞானம் (gnanam - wisdom)",
+      "audioFile": "alphabet/consonants/gn.mp3"
+    },
+    {
+      "id": "consonant_5",
+      "category": "Consonants",
+      "character": "ட்",
+      "transliteration": "ṭ",
+      "pronunciation": "t",
+      "example": "விடு (vidu - leave)",
+      "audioFile": "alphabet/consonants/t.mp3"
+    },
+    {
+      "id": "consonant_6",
+      "category": "Consonants",
+      "character": "ண்",
+      "transliteration": "ṇ",
+      "pronunciation": "n",
+      "example": "கண்ணாடி (kannadi - mirror)",
+      "audioFile": "alphabet/consonants/n.mp3"
+    },
+    {
+      "id": "consonant_7",
+      "category": "Consonants",
+      "character": "த்",
+      "transliteration": "t",
+      "pronunciation": "th",
+      "example": "தண்ணீர் (thanneer - water)",
+      "audioFile": "alphabet/consonants/th.mp3"
+    },
+    {
+      "id": "consonant_8",
+      "category": "Consonants",
+      "character": "ந்",
+      "transliteration": "n",
+      "pronunciation": "nh",
+      "example": "நான் (naan - I)",
+      "audioFile": "alphabet/consonants/nh.mp3"
+    },
+    {
+      "id": "consonant_9",
+      "category": "Consonants",
+      "character": "ப்",
+      "transliteration": "p",
+      "pronunciation": "p",
+      "example": "பூ (poo - flower)",
+      "audioFile": "alphabet/consonants/p.mp3"
+    },
+    {
+      "id": "consonant_10",
+      "category": "Consonants",
+      "character": "ம்",
+      "transliteration": "m",
+      "pronunciation": "m",
+      "example": "மலை (malai - mountain)",
+      "audioFile": "alphabet/consonants/m.mp3"
+    },
+    {
+      "id": "consonant_11",
+      "category": "Consonants",
+      "character": "ய்",
+      "transliteration": "y",
+      "pronunciation": "y",
+      "example": "யானை (yaanai - elephant)",
+      "audioFile": "alphabet/consonants/y.mp3"
+    },
+    {
+      "id": "consonant_12",
+      "category": "Consonants",
+      "character": "ர்",
+      "transliteration": "r",
+      "pronunciation": "r",
+      "example": "ரயில் (rail - train)",
+      "audioFile": "alphabet/consonants/r.mp3"
+    },
+    {
+      "id": "consonant_13",
+      "category": "Consonants",
+      "character": "ல்",
+      "transliteration": "l",
+      "pronunciation": "l",
+      "example": "லட்டு (laddu - sweet)",
+      "audioFile": "alphabet/consonants/l.mp3"
+    },
+    {
+      "id": "consonant_14",
+      "category": "Consonants",
+      "character": "வ்",
+      "transliteration": "v",
+      "pronunciation": "v",
+      "example": "வண்டி (vandi - cart)",
+      "audioFile": "alphabet/consonants/v.mp3"
+    },
+    {
+      "id": "consonant_15",
+      "category": "Consonants",
+      "character": "ழ்",
+      "transliteration": "ḻ",
+      "pronunciation": "zh",
+      "example": "தமிழ் (tamil - Tamil)",
+      "audioFile": "alphabet/consonants/zh.mp3"
+    },
+    {
+      "id": "consonant_16",
+      "category": "Consonants",
+      "character": "ள்",
+      "transliteration": "ḷ",
+      "pronunciation": "l",
+      "example": "கிள்ளி (killi - parrot)",
+      "audioFile": "alphabet/consonants/ll.mp3"
+    },
+    {
+      "id": "consonant_17",
+      "category": "Consonants",
+      "character": "ற்",
+      "transliteration": "ṟ",
+      "pronunciation": "r",
+      "example": "நெற்று (netru - forehead)",
+      "audioFile": "alphabet/consonants/rr.mp3"
+    },
+    {
+      "id": "consonant_18",
+      "category": "Consonants",
+      "character": "ன்",
+      "transliteration": "ṉ",
+      "pronunciation": "n",
+      "example": "மன (mana - mind)",
+      "audioFile": "alphabet/consonants/nn.mp3"
+    }
+  ],
+  "validated": true
 }
